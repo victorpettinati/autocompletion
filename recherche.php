@@ -58,7 +58,10 @@ if (isset($_GET['search'])) {
             foreach ($contain_result as $row) {
                 echo "<li><a href='element.php?id={$row['id']}'>{$row['nom']}</a></li>";
             }
-        } else {
+        }
+        
+        // Affichage du message "Aucun résultat trouvé" uniquement lorsque ni les résultats exacts ni les résultats contenant le terme de recherche ne sont trouvés
+        if (!$exact_result && !$contain_result) {
             echo "<li>Aucun résultat trouvé.</li>";
         }
         ?>
