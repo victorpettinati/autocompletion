@@ -34,9 +34,11 @@ if (isset($_GET['search'])) {
 </head>
 <body>
     <form action="recherche.php" method="GET">
-        <input type="text" name="search" value="<?php echo $search_term; ?>" placeholder="Rechercher...">
+        <input type="text" name="search" id="searchInput" value="<?php echo $search_term; ?>" placeholder="Rechercher...">
         <input type="submit" value="Rechercher">
     </form>
+
+    <div id="autocompleteResults"></div>
 
     <h2>Résultats :</h2>
     <ul>
@@ -61,5 +63,35 @@ if (isset($_GET['search'])) {
         }
         ?>
     </ul>
+
+    <script>
+        // JavaScript code for handling autocomplete
+        const searchInput = document.getElementById('searchInput');
+        const autocompleteResults = document.getElementById('autocompleteResults');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = searchInput.value;
+            if (searchTerm.length >= 2) {
+                fetchAutocompleteResults(searchTerm);
+            } else {
+                autocompleteResults.innerHTML = '';
+            }
+        });
+
+        function fetchAutocompleteResults(searchTerm) {
+            fetch(`autocomplete_recherche.php?search=${encodeURIComponent(searchTerm)}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsHtml = '';
+                    data.forEach(row => {
+                        resultsHtml += `<div><a href='element.php?id=${row.id}'>${row.nom}</a></div>`;
+                    });
+                    autocompleteResults.innerHTML = resultsHtml;
+                })
+                .catch(error => {
+                    console.error('Error fetching autocomplete results:', error);
+                });
+        }
+    </script>
 </body>
 </html>
